@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     entrypoint: 'python'
-    command: 'manage.py runserver'
+    command: 'manage.py runserver 0.0.0.0:8000'
     ports:
       - "80:8000"
     depends_on:
