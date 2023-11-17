@@ -2,6 +2,6 @@ venv
 ..gitignore.un~
 .idea/
 .requirements.txt.un~
-*/.env
+.env
 *.sqlite3
 *__pycache__

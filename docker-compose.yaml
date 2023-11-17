@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  web_app:
+    build:
+      context:
+        .
+    volumes:
+      - ./app:/app
+    env_file:
+      - .env
+    entrypoint: 'python'
+    command: 'manage.py runserver'
+    ports:
+      - "80:8000"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15.3
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  worker:
+    build:
+      context:
+        .
+    entrypoint: 'celery'
+    command: '-A app worker --loglevel=info'
+    volumes:
+      - ./app:/app
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+
+  redis:
+    image: redis:7.2-alpine
+    env_file:
+      - .env
+    command: '--requirepass ${REDIS_PASSWORD}'
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/bitnami/redis/data
+
+volumes:
+  postgres_data:
+  redis_data:
+
